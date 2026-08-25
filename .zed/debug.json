@@ -1,0 +1,26 @@
+[
+	{
+		"label": "Debug native binary",
+		"build": {
+			"command": "make",
+			"args": [
+				"debug",
+				"-B"
+			],
+			"cwd": "$ZED_WORKTREE_ROOT",
+			"shell": {
+				"with_arguments": {
+					"program": "/bin/sh",
+					"args": []
+				}
+			}
+		},
+		"program": "$ZED_WORKTREE_ROOT/build/debug/sift",
+		"args": [
+			"--log-level",
+			"debug"
+		],
+		"request": "launch",
+		"adapter": "CodeLLDB"
+	}
+]

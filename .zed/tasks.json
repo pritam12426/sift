@@ -1,0 +1,17 @@
+[
+	{
+		"label": "Build Current Project",
+		"command": "make",
+		"args": [],
+		"show_command": false,
+		"shell": {
+			"with_arguments": {
+				"program": "/bin/sh",
+				"args": []
+			}
+		},
+		"tags": [
+			"Build"
+		]
+	}
+]
