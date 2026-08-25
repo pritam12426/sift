@@ -27,8 +27,8 @@
 #define _LOG__H_
 
 
-#include <stdbool.h> // bool
-#include <stdio.h>   // FILE
+#include <stdbool.h>  // bool
+#include <stdio.h>    // FILE
 
 #ifdef __cplusplus
 extern "C" {
@@ -112,10 +112,10 @@ void log_record(Log_level_t level,
 	log_record(LOG_LEVEL, 0, 0, 0, NEW_LINE, __VA_ARGS__)
 
 // Log an error and append strerror(errno) (via perror)
-#define LOG_PERROR(...)                                                            \
-	do {                                                                           \
+#define LOG_PERROR(...)                                       \
+	do {                                                      \
 		log_record(LOG_LEVEL_ERROR, 0, 0, 0, 0, __VA_ARGS__); \
-		perror(" ");                                                               \
+		perror(" ");                                          \
 	} while (0)
 
 #define LOG_FATAL(...) \

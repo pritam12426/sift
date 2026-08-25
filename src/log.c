@@ -1,3 +1,16 @@
+/*
+ * Copyright (c) 2026 Pritam
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/*
+ * log.c -- Leveled logger writing to stderr (see log.h)
+ *
+ * Color is decided lazily on first log line: enabled only when stderr
+ * is a TTY, so redirected/file output stays clean.
+ */
+
 #include "log.h"
 
 #include <stdarg.h>
@@ -16,13 +29,20 @@
 
 // -- State ---------------------------------------------------------
 static Log_level_t G_log_level = LOG_LEVEL_INFO;
-int                G_use_color = 0;
+int                G_use_color = 0;  // tri-state: 0 = unchecked, 1 = color on, -1 = color off
 
-void log_set_level(Log_level_t level) { G_log_level = level; }
-Log_level_t log_get_level(void)       { return G_log_level;  }
+void log_set_level(Log_level_t level)
+{
+	G_log_level = level;
+}
+Log_level_t log_get_level(void)
+{
+	return G_log_level;
+}
 
 
 // -- Level metadata ------------------------------------------------
+// Indexed by Log_level_t; index 0 (OFF) is unused and stays zeroed.
 typedef struct {
 	const char *label;
 	const char *color;
@@ -39,6 +59,9 @@ static const Level_meta_t G_level_meta[] = {
 
 
 // -- log_record ----------------------------------------------------
+// Internal sink behind the LOG_* macros. Levels are ordered so a
+// higher enum value = less severe: emit only if level <= threshold.
+// file/line/func arrive only when built with LOG_SHOW_SOURCE_LOCATION.
 void log_record(Log_level_t level,
                 const char *file __attribute__((unused)),
                 int         line __attribute__((unused)),
@@ -47,8 +70,10 @@ void log_record(Log_level_t level,
                 const char *fmt,
                 ...)
 {
-	if (level > G_log_level) return;
+	if (level > G_log_level)
+		return;  // below the active threshold
 
+	// Decide color once, on the first emitted line.
 	if (G_use_color == 0)
 		G_use_color = isatty(fileno(stderr)) ? 1 : -1;
 
