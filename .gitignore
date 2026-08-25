@@ -63,3 +63,8 @@ dkms.conf
 
 
 sift
+
+# Scratch / reference files not part of the build
+temp/
+temp.c
+compile_commands.json

@@ -22,6 +22,8 @@
 typedef struct {
 	bool        print_rules;  // -R: print rule table and exit
 	bool        detect_mime;  // -M: sniff file content, not just name
+	bool        dry_run;      // -n: preview moves without touching files
+	const char *dir;          // positional DIRECTORY to process, "." if omitted
 	const char *log_file;     // -F: log destination file, NULL = stderr
 	Log_level_t log_level;    // -L: minimum severity that gets printed
 } Command_line_options;
@@ -32,6 +34,13 @@ extern Command_line_options G_args;
 // Parse argv into G_args. false only on internal failure -- argp exits
 // the process itself for -h/--usage bad-input cases.
 bool command_line_parse(int argc, char **argv);
+
+// Resolve which directories to process: explicit DIRECTORY beats the
+// SIFT_DIRS env var (";"-separated); neither -> ["."]. Returns a
+// malloc'd NULL-terminated array, or NULL if nothing usable was found
+// (reason already logged). Free the array itself; its strings are
+// process-lifetime and must not be freed.
+const char **command_line_dirs(void);
 
 
 #endif  // _COMMAND_LINE_H_

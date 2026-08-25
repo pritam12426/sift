@@ -29,7 +29,8 @@
 
 // -- State ---------------------------------------------------------
 static Log_level_t G_log_level = LOG_LEVEL_INFO;
-int                G_use_color = 0;  // tri-state: 0 = unchecked, 1 = color on, -1 = color off
+static bool        G_color     = false;
+static bool        G_decided   = false;  // lazily set once on first log call
 
 void log_set_level(Log_level_t level)
 {
@@ -38,6 +39,11 @@ void log_set_level(Log_level_t level)
 Log_level_t log_get_level(void)
 {
 	return G_log_level;
+}
+
+bool log_use_color(void)
+{
+	return G_color;
 }
 
 
@@ -74,19 +80,21 @@ void log_record(Log_level_t level,
 		return;  // below the active threshold
 
 	// Decide color once, on the first emitted line.
-	if (G_use_color == 0)
-		G_use_color = isatty(fileno(stderr)) ? 1 : -1;
+	if (!G_decided) {
+		G_decided = true;
+		G_color   = isatty(fileno(stderr));
+	}
 
 	const Level_meta_t *m = &G_level_meta[level];
 
-	if (G_use_color > 0) {
+	if (G_color) {
 		fprintf(stderr, "[%s%s" COLOR_RESET "] ", m->color, m->label);
 	} else {
 		fprintf(stderr, "[%s] ", m->label);
 	}
 
 #ifdef LOG_SHOW_SOURCE_LOCATION
-	if (G_use_color > 0) {
+	if (G_color) {
 		fprintf(stderr, COLOR_DIM "[%s:%d:%s]" COLOR_RESET " ", file, line, func);
 	} else {
 		fprintf(stderr, "[%s:%d:%s] ", file, line, func);

@@ -17,7 +17,6 @@ UNAME_S := $(shell uname -s)
 # Installation layout (DESTDIR supported for packaging).
 PREFIX ?= /usr/local
 BINPREFIX ?= $(PREFIX)/bin
-MANPREFIX ?= $(PREFIX)/share/man/man1
 
 STRIP ?= strip
 PKG_CONFIG ?= pkg-config
@@ -141,15 +140,11 @@ install: strip  ## Install the sift binary
 	$(INSTALL) -m 0755 -d $(DESTDIR)$(BINPREFIX)
 	$(INSTALL) -m 0755 $(BIN) $(DESTDIR)$(BINPREFIX)
 
-	$(INSTALL) -m 0755 -d $(DESTDIR)$(MANPREFIX)
-	$(INSTALL) -m 0755 sift.1 $(DESTDIR)$(MANPREFIX)
-
 clean:  ## Clean up build artifacts
 	$(RM) -rf $(OUT) $(BIN)  # removes objects + binaries, keeps build/ dirs
 
 uninstall: ## Uninstall the sift binary
-	$(RM) $(DESTDIR)$(BINPREFIX)/$(BIN)
-	$(RM) $(DESTDIR)$(MANPREFIX)/sift.1
+	$(RM) $(DESTDIR)$(BINPREFIX)/sift
 
 strip: $(BIN)  ## Strip the sift binary
 	$(STRIP) $^
