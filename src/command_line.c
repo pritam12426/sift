@@ -9,39 +9,28 @@
 
 const char *argp_program_version     = MAIN_BINARY " " PROJECT_VERSION;
 const char *argp_program_bug_address = PROJECT_HOMEPAGE_URL "/issues" "\n" AUTH_MESSAGE;
+static char args_doc[]               = "[DIRECTORY]";
 static char doc[]                    = MAIN_BINARY " - " PROJECT_DESCRIPTION;
 
 static struct argp_option options[] = {
-	{ 0, 0, 0, 0, "Logging:", 1 },
-	{ "log-level",      'L',  "LEVEL",  0,  "Set log level: [off|fatal|error|warn|info|debug|trace] (default: info)", 1 },
-	{ "log-file",       'F',  "FILE",   0,  "Set logging file",                                                       1 },
-	{ "print-request",  'R',  0,        0,  "Log each client request and headers",                                    1 },
-
-	{ 0, 0, 0, 0, "Connection:", 2 },
-	{ "host",     'H',  "HOST",     0,  "Set the listener host (default: localhost)",  2 },
-	{ "browser",  'B',  "BROWSER",  0,  "Open page in this browser on startup",        2 },
-	{ "dir",      'I',  "DIR",      0,  "Directory to serve (default: .)",             2 },
+	{ "log-level",      'L',  "LEVEL",  0,  "Set log level: [off|fatal|error|warn|info|debug|trace] (default: info)",  },
+	{ "log-file",       'F',  "FILE",   0,  "Set logging file",                                                        },
+	{ "rules",          'R',  0,        0,  "Print the current rule list and exit.",                                   },
 
 	{ 0 }
 };
 
 Command_line_options G_args = {
-	.print_request = false,
-	.dir           = ".",
-	.browser       = NULL,
-	.host          = "localhost",
-	.log_file      = NULL,
-	.log_level     = LOG_LEVEL_INFO,
+	.print_rules = false,
+	.log_file    = NULL,
+	.log_level   = LOG_LEVEL_INFO,
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
 {
 	switch (key) {
-		case 'R':  G_args.print_request = true; break;
-		case 'H':  G_args.host          = arg; break;
-		case 'F':  G_args.log_file      = arg; break;
-		case 'B':  G_args.browser       = arg; break;
-		case 'I':  G_args.dir           = arg; break;
+		case 'R':  G_args.print_rules = true; break;
+		case 'F':  G_args.log_file    = arg; break;
 		case 'L': {
 			if      (strcmp(arg, "off")   == 0)  G_args.log_level = LOG_LEVEL_OFF;
 			else if (strcmp(arg, "fatal") == 0)  G_args.log_level = LOG_LEVEL_FATAL;
@@ -60,7 +49,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 	return 0;
 }
 
-static struct argp argp = { .options = options, .parser = parse_opt, .doc = doc };
+static struct argp argp = { .options = options, .parser = parse_opt, .args_doc = args_doc, .doc = doc };
 
 bool command_line_parse(int argc, char **argv)
 {

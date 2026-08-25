@@ -2,10 +2,16 @@
 
 #include "command_line.h"
 #include "log.h"
+#include "rules.h"
 
 int main(int argc, char *argv[])
 {
 	if (!command_line_parse(argc, argv)) return 1;
+
+	if (G_args.print_rules) {
+		rules_print();
+		return 0;
+	}
 
 	if (LOG_LEVEL_IS_ENABLED(LOG_LEVEL_DEBUG)) {
 		LOG_CUSTOM(LOG_LEVEL_DEBUG, false, "Command-line args: [");

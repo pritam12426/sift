@@ -7,10 +7,7 @@
 #include "log.h"
 
 typedef struct {
-	bool        print_request;
-	const char *dir;
-	const char *browser;
-	const char *host;
+	bool        print_rules;
 	const char *log_file;
 	Log_level_t log_level;
 } Command_line_options;
