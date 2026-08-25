@@ -8,6 +8,7 @@
 
 typedef struct {
 	bool        print_rules;
+	bool        detect_mime;
 	const char *log_file;
 	Log_level_t log_level;
 } Command_line_options;

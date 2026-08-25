@@ -16,12 +16,14 @@ static struct argp_option options[] = {
 	{ "log-level",      'L',  "LEVEL",  0,  "Set log level: [off|fatal|error|warn|info|debug|trace] (default: info)",  },
 	{ "log-file",       'F',  "FILE",   0,  "Set logging file",                                                        },
 	{ "rules",          'R',  0,        0,  "Print the current rule list and exit.",                                   },
+	{ "mime-type",      'M',  0,        0,  "Detect file type by content (magic bytes), not just name",                },
 
 	{ 0 }
 };
 
 Command_line_options G_args = {
 	.print_rules = false,
+	.detect_mime = false,
 	.log_file    = NULL,
 	.log_level   = LOG_LEVEL_INFO,
 };
@@ -30,7 +32,8 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 {
 	switch (key) {
 		case 'R':  G_args.print_rules = true; break;
-		case 'F':  G_args.log_file    = arg; break;
+		case 'M':  G_args.detect_mime = true; break;
+		case 'F':  G_args.log_file    = arg;  break;
 		case 'L': {
 			if      (strcmp(arg, "off")   == 0)  G_args.log_level = LOG_LEVEL_OFF;
 			else if (strcmp(arg, "fatal") == 0)  G_args.log_level = LOG_LEVEL_FATAL;
